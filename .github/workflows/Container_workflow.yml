@@ -1,16 +1,17 @@
+---
 name: Full Container Image Workflow - Build, Test, Label, and Publish
 
 on:
   schedule:
-    - cron: '15 1 25 * *'
+    - cron: '15 1 * * *'
   workflow_dispatch:
   push:
-    branches: [ "main" ]
+    branches: ["main"]
     # don't rebuild image if someone only edited unrelated files
     paths-ignore:
       - 'README.md'
   pull_request:
-  #  branches: [ "main" ]
+    branches: ["main"]
     # don't rebuild image if someone only edited unrelated files
     paths-ignore:
       - 'README.md'
@@ -52,15 +53,15 @@ jobs:
           tags: ${{ github.run_id }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
-      
-      ###security testing of cve's Blocking and Non-Blocking
+
+      ### security testing of cve's Blocking and Non-Blocking
       - name: Run Trivy for all CVEs (non-blocking)
         uses: aquasecurity/trivy-action@0.7.1
         with:
           image-ref: ${{ github.run_id }}
           exit-code: 0
           ignore-unfixed: true
-          format: table 
+          format: table
 
       - name: Run Trivy for HIGH,CRITICAL CVEs and report (blocking)
         uses: aquasecurity/trivy-action@0.7.1
@@ -72,18 +73,18 @@ jobs:
           severity: 'HIGH,CRITICAL'
           format: 'sarif'
           output: 'trivy-results.sarif'
-      
+
       - name: Upload Trivy scan results to GitHub Security tab
         uses: github/codeql-action/upload-sarif@v2
         if: always()
         with:
           sarif_file: 'trivy-results.sarif'
-      
+
       # generic test of does the container run (not sure how this plays with different entrypoints)
       - name: Unit Test - will it run ?
         run: |
           docker run --rm ${{ github.run_id }}
-          
+
       - name: Extract Software Version Number for Labeling and Tagging
         run: echo "SoftwareVersion=$(docker run --rm --entrypoint=cat ${{ github.run_id }} SoftwareVersion.txt)" >> $GITHUB_ENV
         # env.SoftwareVersion
@@ -108,10 +109,9 @@ jobs:
           ### platforms to build for, defaults to linux/amd64
           ### other options: linux/amd64,linux/arm64,linux/arm/v7
           platforms: linux/amd64
-          ##push the image to the registry ONLY IF it is not a pull request  (when the pull request is merged then it will push to the registry)
+          ## push the image to the registry ONLY IF it is not a pull request  (when the pull request is merged then it will push to the registry)
           push: ${{ github.event_name != 'pull_request' }}
-          #push: true
-          ##when using the buildkit layers can be cached to speed future builds
+          ## when using the buildkit layers can be cached to speed future builds
           cache-from: type=gha
           cache-to: type=gha,mode=max
           tags: ${{ steps.meta.outputs.tags }}
