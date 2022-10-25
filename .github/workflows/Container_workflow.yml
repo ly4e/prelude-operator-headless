@@ -21,7 +21,6 @@ env:
   # github.repository as <account>/<repo>
   IMAGE_NAME: ${{ github.repository }}
   TEST_TAG: ${{ github.repository }}:test
-  lversion: sample123
 
 
 jobs:
@@ -80,20 +79,16 @@ jobs:
         with:
           sarif_file: 'trivy-results.sarif'
       
-      # # generic test of does the container run (not sure how this plays with different entrypoints)
-      # - name: Unit Test potential example
-      #   run: |
-      #     docker run --rm ${{ env.TEST_TAG }}
-      #     docker run --rm ${{ github.run_id }}
-      #   # docker run --rm ${{ github.run_id }} echo "run test commands here"
-      #   # or some modified entrypoint to test the image
+      # generic test of does the container run (not sure how this plays with different entrypoints)
+      - name: Unit Test potential example
+        run: |
+          docker run --rm ${{ github.run_id }}
+        # docker run --rm ${{ github.run_id }} echo "run test commands here"
+        # or some modified entrypoint to test the image
 
-      - name: Read Software Version Labeling and Tagging
-        run: echo "SoftwareVersion=$(cat SoftwareVersion.txt)" >> $GITHUB_ENV
-        #env.SoftwareVersion
-      - name: Read VERSION from docker label...
-        run: echo "lversion=$(docker run --rm --entrypoint=cat ${{ env.TEST_TAG }} SoftwareVersion.txt)" >> $GITHUB_ENV
-        # env.lversion
+      - name: Extract Software Version Labeling and Tagging
+        run: echo "SoftwareVersion=$(docker run --rm --entrypoint=cat ${{ github.run_id }} SoftwareVersion.txt)" >> $GITHUB_ENV
+        # env.SoftwareVersion
 
       - name: Docker meta
         id: meta
