@@ -87,12 +87,9 @@ jobs:
       #   # docker run --rm ${{ github.run_id }} echo "run test commands here"
       #   # or some modified entrypoint to test the image
 
-      - name: Read VERSION file
-        run: echo "version=$(cat VERSION)" >> $GITHUB_ENV
-        #env.version
       - name: Read VERSION from docker label...
-        run: echo "lversion=$(docker run --rm --entrypoint=cat ${{ env.TEST_TAG }} SoftwareVersion.txt" >> $GITHUB_ENV
-        # env.lversion
+        run: echo "version=$(docker run --rm --entrypoint=cat ${{ env.TEST_TAG }} SoftwareVersion.txt" >> $GITHUB_ENV
+        # env.version
 
       - name: Docker meta
         id: meta
@@ -106,7 +103,6 @@ jobs:
             type=raw,value={{date 'YYYYMMDD'}}
             type=raw,value=latest
             type=raw,value=${{env.version}}
-            type=raw,value=${{env.lversion}}
 
       - name: Build and push
         uses: docker/build-push-action@v3
