@@ -42,11 +42,12 @@ EXPOSE 8888/tcp
 # something to test later --> running as generic user <--
 #RUN groupadd -r prelude && useradd --no-log-init -r -g prelude prelude
 #USER prelude
+### NEED to test teh image with a generic user
 
 ENTRYPOINT [ "./headless" ]
 CMD ["--help"]
 
-LABEL Usage="docker run --rm -p 2323:2323/tcp -p 4545:4545/udp -p 3391:3391/tcp -p 8888:8888/tcp -p 50051:50051/tcp -p 8443:8443/tcp ly4e/prelude-operator:latest --sessionToken=\${SESSIONTOKEN} --accountEmail=\${ACCOUNTEMAIL} --accountToken=\${ACCOUNTOKEN} --accountSecret=\${ACCOUNTSECRET}"
+LABEL USAGE="docker run --rm -p 2323:2323/tcp -p 4545:4545/udp -p 3391:3391/tcp -p 8888:8888/tcp -p 50051:50051/tcp -p 8443:8443/tcp ly4e/prelude-operator:latest --sessionToken=\${SESSIONTOKEN} --accountEmail=\${ACCOUNTEMAIL} --accountToken=\${ACCOUNTOKEN} --accountSecret=\${ACCOUNTSECRET}"
 
 WORKDIR /
 COPY --from=builder headless .
