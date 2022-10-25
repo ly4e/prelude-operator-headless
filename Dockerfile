@@ -1,7 +1,8 @@
 FROM ubuntu:22.04 AS builder
-
+# hadolint ignore=DL3015
 RUN apt-get update && \
-    apt-get install -y wget=1.21.2-2ubuntu1  unzip=6.0-26ubuntu3.1 && \
+    #apt-get install -y wget=1.21.2-2ubuntu1  unzip=6.0-26ubuntu3.1 && \
+    apt-get install -y wget  unzip && \
     wget "https://download.prelude.org/latest?arch=x64&platform=linux&variant=zip&edition=headless" --output-document=file.zip --output-file=file.logs && \
     grep Location file.logs >> tempfile && \
     cut -d/ -f 6 tempfile >> SoftwareVersion.txt && \
