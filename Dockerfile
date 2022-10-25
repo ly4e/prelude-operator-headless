@@ -7,8 +7,12 @@ RUN apt-get update && \
     cut -d/ -f 6 tempfile >> SoftwareVersion.txt && \
     unzip file.zip && \
     chmod +x headless
+
+
 RUN groupadd -r prelude && useradd --no-log-init -r -g prelude prelude
+USER prelude
 #NOTE does nothing here but might make the lint go away...?
+
 
 FROM ubuntu:22.04
 # ---------------------------------------------
@@ -37,6 +41,7 @@ EXPOSE 8888/tcp
 
 # something to test later --> running as generic user <--
 #RUN groupadd -r prelude && useradd --no-log-init -r -g prelude prelude
+#USER prelude
 
 ENTRYPOINT [ "./headless" ]
 CMD ["--help"]
