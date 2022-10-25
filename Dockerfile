@@ -1,9 +1,12 @@
 FROM ubuntu:22.04 AS builder
-RUN apt update && apt install -y wget unzip
-RUN wget "https://download.prelude.org/latest?arch=x64&platform=linux&variant=zip&edition=headless" --output-document=file.zip --output-file=file.logs
-RUN cat file.logs | grep Location | cut -d/ -f 6 >> SoftwareVersion.txt
-RUN unzip file.zip
-RUN chmod +x headless
+
+RUN apt-get update && \
+    apt-get install -y wget unzip && \
+    wget "https://download.prelude.org/latest?arch=x64&platform=linux&variant=zip&edition=headless" --output-document=file.zip --output-file=file.logs && \
+    grep Location file.logs >> tempfile && \
+    cut -d/ -f 6 tempfile >> SoftwareVersion.txt && \
+    unzip file.zip && \
+    chmod +x headless
 
 FROM ubuntu:22.04
 # ---------------------------------------------
@@ -38,5 +41,6 @@ CMD ["--help"]
 
 LABEL Usage="docker run --rm -p 2323:2323/tcp -p 4545:4545/udp -p 3391:3391/tcp -p 8888:8888/tcp -p 50051:50051/tcp -p 8443:8443/tcp ly4e/prelude-operator:latest --sessionToken=\${SESSIONTOKEN} --accountEmail=\${ACCOUNTEMAIL} --accountToken=\${ACCOUNTOKEN} --accountSecret=\${ACCOUNTSECRET}"
 
+WORKDIR /
 COPY --from=builder headless .
 COPY --from=builder SoftwareVersion.txt .
