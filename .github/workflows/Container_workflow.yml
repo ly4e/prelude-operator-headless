@@ -87,9 +87,9 @@ jobs:
       #   # docker run --rm ${{ github.run_id }} echo "run test commands here"
       #   # or some modified entrypoint to test the image
 
-      - name: Read VERSION from docker label...
-        run: echo "version=$(docker run --rm --entrypoint=cat ${{ env.TEST_TAG }} SoftwareVersion.txt" >> $GITHUB_ENV
-        # env.version
+      # - name: Read VERSION from docker label...
+      #   run: echo "version=$(docker run --rm --entrypoint=cat ${{ env.TEST_TAG }} SoftwareVersion.txt" >> $GITHUB_ENV
+      #   # env.version
 
       - name: Docker meta
         id: meta
