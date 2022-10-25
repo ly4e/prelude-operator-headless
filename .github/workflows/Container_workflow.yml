@@ -21,6 +21,7 @@ env:
   # github.repository as <account>/<repo>
   IMAGE_NAME: ${{ github.repository }}
   TEST_TAG: ${{ github.repository }}:test
+  lversion: sample123
 
 
 jobs:
@@ -87,22 +88,26 @@ jobs:
       #   # docker run --rm ${{ github.run_id }} echo "run test commands here"
       #   # or some modified entrypoint to test the image
 
+      - name: Read Software Version Labeling and Tagging
+        run: echo "SoftwareVersion=$(cat SoftwareVersion.txt)" >> $GITHUB_ENV
+        #env.SoftwareVersion
       # - name: Read VERSION from docker label...
-      #   run: echo "version=$(docker run --rm --entrypoint=cat ${{ env.TEST_TAG }} SoftwareVersion.txt" >> $GITHUB_ENV
-      #   # env.version
+      #   run: echo "lversion=$(docker run --rm --entrypoint=cat ${{ env.TEST_TAG }} SoftwareVersion.txt" >> $GITHUB_ENV
+      #   # env.lversion
 
       - name: Docker meta
         id: meta
         uses: docker/metadata-action@v4
         with:
           images: ${{env.IMAGE_NAME}}
-          labels: |
-            org.opencontainers.image.title="Test Conatiner Title"
-            org.opencontainers.image.description=Another description
+          # labels: |
+          #   org.opencontainers.image.title="Test Conatiner Title"
+          #   org.opencontainers.image.description=Another description
           tags: |
             type=raw,value={{date 'YYYYMMDD'}}
             type=raw,value=latest
-            type=raw,value=${{env.version}}
+            type=raw,value=${{env.SoftwareVersion}}
+            type=raw,value=${{env.lversion}}
 
       - name: Build and push
         uses: docker/build-push-action@v3
