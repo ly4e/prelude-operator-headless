@@ -38,10 +38,6 @@ docker run --rm -it --entrypoint="bash" ly4e/prelude-operator:latest
 ---
 ---
 ---
-## Building the image - Command Template (for reference):
-```bash
-VERSION=1.7.0; docker build --no-cache=true --build-arg BUILD_DATE=$(date -u +'%Y-%m-%dT%H:%M:%SZ') --build-arg VERSION=$VERSION -t ly4e/prelude-operator:$VERSION -t ly4e/prelude-operator:latest  .
-```
 ### Cherry pick the labels from docker inpect for easier review
 ```bash
 docker inspect ly4e/prelude-operator:latest --format '{{ json .Config.Labels }}' | sed 's/,/\n/g'

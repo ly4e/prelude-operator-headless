@@ -55,7 +55,7 @@ jobs:
       
       ###security testing of cve's Blocking and Non-Blocking
       - name: Run Trivy for all CVEs (non-blocking)
-        uses: aquasecurity/trivy-action@master
+        uses: aquasecurity/trivy-action@0.7.1
         with:
           image-ref: ${{ github.run_id }}
           exit-code: 0
@@ -63,7 +63,7 @@ jobs:
           format: table 
 
       - name: Run Trivy for HIGH,CRITICAL CVEs and report (blocking)
-        uses: aquasecurity/trivy-action@master
+        uses: aquasecurity/trivy-action@0.7.1
         with:
           image-ref: ${{ github.run_id }}
           exit-code: 1
@@ -80,19 +80,17 @@ jobs:
           sarif_file: 'trivy-results.sarif'
       
       # generic test of does the container run (not sure how this plays with different entrypoints)
-      - name: Unit Test potential example
+      - name: Unit Test - will it run ?
         run: |
           docker run --rm ${{ github.run_id }}
-        # docker run --rm ${{ github.run_id }} echo "run test commands here"
-        # or some modified entrypoint to test the image
-
+          
       - name: Extract Software Version Number for Labeling and Tagging
         run: echo "SoftwareVersion=$(docker run --rm --entrypoint=cat ${{ github.run_id }} SoftwareVersion.txt)" >> $GITHUB_ENV
         # env.SoftwareVersion
 
       - name: Docker meta
         id: meta
-        uses: docker/metadata-action@v4
+        uses: docker/metadata-action@v4.1.1
         with:
           images: ${{env.IMAGE_NAME}}
           # labels: |
