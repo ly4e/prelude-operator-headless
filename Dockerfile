@@ -47,7 +47,8 @@ EXPOSE 8888/tcp
 ENTRYPOINT [ "./headless" ]
 CMD ["--help"]
 
-LABEL USAGE="docker run --rm -p 2323:2323/tcp -p 4545:4545/udp -p 3391:3391/tcp -p 8888:8888/tcp -p 50051:50051/tcp -p 8443:8443/tcp ly4e/prelude-operator:latest --sessionToken=\${SESSIONTOKEN} --accountEmail=\${ACCOUNTEMAIL} --accountToken=\${ACCOUNTOKEN} --accountSecret=\${ACCOUNTSECRET}"
+# hadolint ignore=DL3048
+LABEL Usage="docker run --rm -p 2323:2323/tcp -p 4545:4545/udp -p 3391:3391/tcp -p 8888:8888/tcp -p 50051:50051/tcp -p 8443:8443/tcp ly4e/prelude-operator:latest --sessionToken=\${SESSIONTOKEN} --accountEmail=\${ACCOUNTEMAIL} --accountToken=\${ACCOUNTOKEN} --accountSecret=\${ACCOUNTSECRET}"
 
 WORKDIR /
 COPY --from=builder headless .
