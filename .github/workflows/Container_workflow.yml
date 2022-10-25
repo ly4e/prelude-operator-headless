@@ -91,9 +91,9 @@ jobs:
       - name: Read Software Version Labeling and Tagging
         run: echo "SoftwareVersion=$(cat SoftwareVersion.txt)" >> $GITHUB_ENV
         #env.SoftwareVersion
-      # - name: Read VERSION from docker label...
-      #   run: echo "lversion=$(docker run --rm --entrypoint=cat ${{ env.TEST_TAG }} SoftwareVersion.txt" >> $GITHUB_ENV
-      #   # env.lversion
+      - name: Read VERSION from docker label...
+        run: echo "lversion=$(docker run --rm --entrypoint=cat ${{ env.TEST_TAG }} SoftwareVersion.txt)" >> $GITHUB_ENV
+        # env.lversion
 
       - name: Docker meta
         id: meta
