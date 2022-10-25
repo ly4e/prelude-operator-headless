@@ -10,7 +10,7 @@ aka: Creating a container to assist in running a headless "Prelude Operator" ins
 
 ### NOTE: This container's default is to display the "help" menu if no parameters are supplied
 ```bash
-docker run --rm ly4e/prelude-operator:latest
+docker run --rm ly4e/prelude-operator-headless:latest
 ```
  will result in `./headless --help` being executed.
 
@@ -19,7 +19,7 @@ docker run --rm ly4e/prelude-operator:latest
 ---
 # Starting the container (exposing default ports)
 ```bash
-docker run --rm -p 2323:2323/tcp -p 4545:4545/udp -p 3391:3391/tcp -p 8888:8888/tcp -p 50051:50051/tcp -p 8443:8443/tcp ly4e/prelude-operator:latest --sessionToken=${SESSIONTOKEN} --accountEmail=${ACCOUNTEMAIL} --accountToken=${ACCOUNTOKEN} --accountSecret=${ACCOUNTSECRET}
+docker run --rm -p 2323:2323/tcp -p 4545:4545/udp -p 3391:3391/tcp -p 8888:8888/tcp -p 50051:50051/tcp -p 8443:8443/tcp ly4e/prelude-operator-headless:latest --sessionToken=${SESSIONTOKEN} --accountEmail=${ACCOUNTEMAIL} --accountToken=${ACCOUNTOKEN} --accountSecret=${ACCOUNTSECRET}
 ```
 
 ## if an interactive session is needed for some reason...
