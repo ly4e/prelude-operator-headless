@@ -16,12 +16,15 @@ on:
     paths-ignore:
       - 'README.md'
 
+concurrency:
+  group: ${{ github.ref }}-${{ github.workflow }}
+  cancel-in-progress: true
+
 env:
   # Use docker.io for Docker Hub || ghcr.io for Github ...
   REGISTRY: docker.io
   # github.repository as <account>/<repo>
   IMAGE_NAME: ${{ github.repository }}
-
 
 jobs:
   container_create:
@@ -56,15 +59,15 @@ jobs:
 
       ### security testing of cve's Blocking and Non-Blocking
       - name: Run Trivy for all CVEs (non-blocking)
-        uses: aquasecurity/trivy-action@0.7.1
+        uses: aquasecurity/trivy-action@master
         with:
           image-ref: ${{ github.run_id }}
           exit-code: 0
-          ignore-unfixed: true
+          ignore-unfixed: false
           format: table
 
       - name: Run Trivy for HIGH,CRITICAL CVEs and report (blocking)
-        uses: aquasecurity/trivy-action@0.7.1
+        uses: aquasecurity/trivy-action@master
         with:
           image-ref: ${{ github.run_id }}
           exit-code: 1
@@ -79,6 +82,37 @@ jobs:
         if: always()
         with:
           sarif_file: 'trivy-results.sarif'
+
+      - name: Run Snyk to check Docker image for vulnerabilities
+        # Snyk can be used to break the build when it detects vulnerabilities.
+        # In this case we want to upload the issues to GitHub Code Scanning
+        continue-on-error: true
+        uses: snyk/actions/docker@master
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+        with:
+          image: ${{ github.run_id }}
+          args: --file=Dockerfile
+
+      - name: Upload result to GitHub Code Scanning
+        uses: github/codeql-action/upload-sarif@v2
+        with:
+          sarif_file: snyk.sarif
+
+      # - name: Set up Clair
+      #   shell: bash
+      #   run: |
+      #     curl -L \
+      #     https://github.com/arminc/clair-scanner/releases/download/v12/clair-scanner_linux_amd64 \
+      #     -o clair-scanner && \
+      #     chmod +x ./clair-scanner
+      #     docker run -d --name clair-db arminc/clair-db:latest
+      #     docker run -p 6060:6060 --link clair-db:postgres -d --name clair arminc/clair-local-scan:latest
+      # - name: Scan image with Clair
+      #   shell: bash
+      #   run: |
+      #     ip=$(ip addr show eth0 | grep "inet\b" | awk '{print $2}' | cut -d/ -f1)
+      #     ./clair-scanner --ip $ip ${{ github.run_id }}
 
       # generic test of does the container run (not sure how this plays with different entrypoints)
       - name: Unit Test - will it run ?
@@ -98,7 +132,7 @@ jobs:
           #   org.opencontainers.image.title="Test Conatiner Title"
           #   org.opencontainers.image.description=Another description
           tags: |
-            type=raw,value={{date 'YYYYMMDD'}}
+            type=raw,value={{date 'YYYYMM'}}
             type=raw,value=latest
             type=raw,value=${{env.SoftwareVersion}}
 
