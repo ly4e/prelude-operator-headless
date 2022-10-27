@@ -98,7 +98,7 @@ jobs:
           #   org.opencontainers.image.title="Test Conatiner Title"
           #   org.opencontainers.image.description=Another description
           tags: |
-            type=raw,value={{date 'YYYYMMDD'}}
+            type=raw,value={{date 'YYYYMM'}}
             type=raw,value=latest
             type=raw,value=${{env.SoftwareVersion}}
 
