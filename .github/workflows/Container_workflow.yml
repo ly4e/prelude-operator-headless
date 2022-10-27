@@ -60,7 +60,7 @@ jobs:
         with:
           image-ref: ${{ github.run_id }}
           exit-code: 0
-          ignore-unfixed: true
+          ignore-unfixed: false
           format: table
 
       - name: Run Trivy for HIGH,CRITICAL CVEs and report (blocking)
