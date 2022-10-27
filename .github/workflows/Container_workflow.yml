@@ -114,10 +114,10 @@ jobs:
       #     ip=$(ip addr show eth0 | grep "inet\b" | awk '{print $2}' | cut -d/ -f1)
       #     ./clair-scanner --ip $ip ${{ github.run_id }}
 
-      # generic test of does the container run (not sure how this plays with different entrypoints)
-      - name: Unit Test - will it run ?
-        run: |
-          docker run --rm ${{ github.run_id }}
+      # # generic test of does the container run (not sure how this plays with different entrypoints)
+      # - name: Unit Test - will it run ?
+      #   run: |
+      #     docker run --rm ${{ github.run_id }}
 
       - name: Extract Software Version Number for Labeling and Tagging
         run: echo "SoftwareVersion=$(docker run --rm --entrypoint=cat ${{ github.run_id }} SoftwareVersion.txt)" >> $GITHUB_ENV
