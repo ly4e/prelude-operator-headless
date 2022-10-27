@@ -56,7 +56,7 @@ jobs:
 
       ### security testing of cve's Blocking and Non-Blocking
       - name: Run Trivy for all CVEs (non-blocking)
-        uses: aquasecurity/trivy-action@0.7.1
+        uses: aquasecurity/trivy-action@master
         with:
           image-ref: ${{ github.run_id }}
           exit-code: 0
@@ -64,7 +64,7 @@ jobs:
           format: table
 
       - name: Run Trivy for HIGH,CRITICAL CVEs and report (blocking)
-        uses: aquasecurity/trivy-action@0.7.1
+        uses: aquasecurity/trivy-action@master
         with:
           image-ref: ${{ github.run_id }}
           exit-code: 1
@@ -84,7 +84,7 @@ jobs:
         # Snyk can be used to break the build when it detects vulnerabilities.
         # In this case we want to upload the issues to GitHub Code Scanning
         continue-on-error: true
-        uses: snyk/actions/docker@14818c4695ecc4045f33c9cee9e795a788711ca4
+        uses: snyk/actions/docker@master
         env:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
         with:
@@ -95,6 +95,21 @@ jobs:
         uses: github/codeql-action/upload-sarif@v2
         with:
           sarif_file: snyk.sarif
+
+      - name: Set up Clair
+        shell: bash
+        run: |
+          curl -L \
+          https://github.com/arminc/clair-scanner/releases/download/v12/clair-scanner_linux_amd64 \
+          -o clair-scanner && \
+          chmod +x ./clair-scanner
+          docker run -d --name clair-db arminc/clair-db:latest
+          docker run -p 6060:6060 --link clair-db:postgres -d --name clair arminc/clair-local-scan:latest
+      - name: Scan image with Clair
+        shell: bash
+        run: |
+          ip=$(ip addr show eth0 | grep "inet\b" | awk '{print $2}' | cut -d/ -f1)
+          ./clair-scanner --ip $ip ${{ inputs.image-name }}:${{ inputs.tag }}
 
       # generic test of does the container run (not sure how this plays with different entrypoints)
       - name: Unit Test - will it run ?
