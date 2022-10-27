@@ -3,7 +3,7 @@ name: Full Container Image Workflow - Build, Test, Label, and Publish
 
 on:
   schedule:
-    - cron: '15 1 * * 2'
+    - cron: '15 1 * * *'
   workflow_dispatch:
   push:
     branches: ["main"]
