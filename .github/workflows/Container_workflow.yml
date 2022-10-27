@@ -16,6 +16,11 @@ on:
     paths-ignore:
       - 'README.md'
 
+
+concurrency:
+  group: ${{ github.ref }}-${{ github.workflow }}
+  cancel-in-progress: true
+
 env:
   # Use docker.io for Docker Hub || ghcr.io for Github ...
   REGISTRY: docker.io
