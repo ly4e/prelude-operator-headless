@@ -41,7 +41,7 @@ EXPOSE 8888/tcp
 # something to test later --> running as generic user <--
 #RUN groupadd -r prelude && useradd --no-log-init -r -g prelude prelude
 #USER prelude
-### NEED to test teh image with a generic user
+### NEED to test the image with a generic user
 
 ENTRYPOINT [ "./headless" ]
 CMD ["--help"]
