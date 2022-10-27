@@ -1,0 +1,12 @@
+# README: https://github.com/hadolint/hadolint
+
+# Often it's a good idea to do inline disables rather that repo-wide in this file.
+# Example of inline Dockerfile rules:
+# hadolint ignore=DL3018
+# RUN apk add --no-cache git
+
+# or just ignore rules repo-wide
+ignored:
+  - DL3006 #image pin versions
+  - DL3008 #apt pin versions
+  - DL3018 #apk add pin versions
