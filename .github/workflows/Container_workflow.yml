@@ -142,7 +142,7 @@ jobs:
           context: .
           ### platforms to build for, defaults to linux/amd64
           ### other options: linux/amd64,linux/arm64,linux/arm/v7
-          platforms: linux/amd64
+          platforms: linux/amd64,linux/arm64,linux/arm/v7
           ## push the image to the registry ONLY IF it is not a pull request  (when the pull request is merged then it will push to the registry)
           push: ${{ github.event_name != 'pull_request' }}
           ## when using the buildkit layers can be cached to speed future builds
