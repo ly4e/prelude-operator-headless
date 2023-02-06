@@ -48,7 +48,7 @@ jobs:
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
       - name: Build and Export to Docker for testing
-        uses: docker/build-push-action@v3
+        uses: docker/build-push-action@v4
         with:
           context: .
           push: false
@@ -136,7 +136,7 @@ jobs:
             type=raw,value=${{env.SoftwareVersion}}
 
       - name: Build and push
-        uses: docker/build-push-action@v3
+        uses: docker/build-push-action@v4
         with:
           context: .
           ### platforms to build for, defaults to linux/amd64
