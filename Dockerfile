@@ -1,4 +1,4 @@
-FROM ubuntu:23.04 AS builder
+FROM ubuntu:23.10 AS builder
 # hadolint ignore=DL3015,DL3008
 RUN apt-get update && \
     apt-get install -y wget  unzip && \
@@ -13,7 +13,7 @@ USER prelude
 #NOTE does nothing here but might make the lint go away...?
 ####################
 
-FROM ubuntu:23.04
+FROM ubuntu:23.10
 # ---------------------------------------------
 # Additional Required Ports - Prelude GUI Access - limit access as desired
 # ---------------------------------------------
